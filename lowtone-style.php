@@ -17,5 +17,8 @@ namespace lowtone\style {
 		return;
 	
 	Util::addMergedPath(__NAMESPACE__);
+
+	foreach (glob(__DIR__ . "/assets/styles/*.css") as $stylesheet) 
+		wp_register_style("lowtone_style_" . ($basename = basename($stylesheet, ".css")), LIB_URL . "/lowtone-style/assets/styles/" . $basename . ".css");
 	
 }

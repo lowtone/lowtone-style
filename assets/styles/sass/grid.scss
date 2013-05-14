@@ -1,0 +1,59 @@
+@charset "UTF-8";
+
+$numerators: "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen";
+$denominators: "whole", "half", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth";
+
+$number_of_columns: 16 !default;
+$column_margin: 1% !default;
+
+@mixin column_width($numerator, $denominator, $margin: $column_margin) {
+	$width: 100%/$denominator*$numerator;
+
+	width: $width - $margin*2;
+
+	@if $margin > 0 {
+
+		&.alpha {
+			margin-left: 0;
+			width: $width - $margin;
+		}
+
+		&.omega {
+			margin-right: 0;
+			width: $width - $margin;
+		}
+
+		&.alpha.omega {
+			width: $width;
+			margin: {
+				left: 0;
+				right: 0;
+			}
+		}
+
+	}
+}
+
+@mixin create_columns($number_of_columns: $number_of_columns, $margin: $column_margin) {
+
+	@for $denominator from 1 through $number_of_columns {
+		@for $numerator from 1 through $denominator {
+			&.#{nth($numerators, $numerator)}.#{nth($denominators, $denominator)} {
+				@include column_width($numerator, $denominator, $margin);
+			}
+		}
+	}
+
+}
+
+.column {
+	float: left;
+	margin: {
+		left: $column_margin;
+		right: $column_margin;
+	}
+	width: 100% - $column_margin*2;
+	
+
+	@include create_columns();
+}
