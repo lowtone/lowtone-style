@@ -8,10 +8,10 @@ $denominators: "whole", "half", "third", "fourth", "fifth", "sixth", "seventh", 
 $number_of_columns: 16 !default;
 $column_margin: 1% !default;
 
-@mixin column_width($numerator, $denominator, $margin: $column_margin) {
+@mixin column_width($numerator, $denominator, $margin: $column_margin, $important: null) {
 	$width: 100%/$denominator*$numerator;
 
-	width: $width - $margin*2;
+	width: $width - $margin*2 #{$important};
 
 	@if $margin > 0 {
 		
@@ -22,16 +22,16 @@ $column_margin: 1% !default;
 
 		&.alpha {
 			margin-left: 0;
-			width: $width - $margin;
+			width: $width - $margin #{$important};
 		}
 
 		&.omega {
 			margin-right: 0;
-			width: $width - $margin;
+			width: $width - $margin #{$important};
 		}
 
 		&.alpha.omega {
-			width: $width;
+			width: $width #{$important};
 			margin: {
 				left: 0;
 				right: 0;
@@ -56,4 +56,6 @@ $column_margin: 1% !default;
 @mixin stack_column {
 	float: none;
 	display: block;
+
+	@include column_width(1, 1, $column_margin, !important);
 }
