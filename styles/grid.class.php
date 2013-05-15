@@ -43,7 +43,7 @@ class Grid {
 	public function translateWidth($width) {
 		list($numerator, $denominator) = explode("/", $width);
 
-		return self::$numerators[$numerator-1] . " " . self::$denominators[$denominator-1];
+		return self::$numerators[$numerator-1] . "-" . self::$denominators[$denominator-1];
 	}
 
 }

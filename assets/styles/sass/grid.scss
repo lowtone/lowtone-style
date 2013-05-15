@@ -8,6 +8,8 @@ $denominators: "whole", "half", "third", "fourth", "fifth", "sixth", "seventh", 
 $number_of_columns: 16 !default;
 $column_margin: 1% !default;
 
+$responsive: true !default;
+
 @mixin column_width($numerator, $denominator, $margin: $column_margin) {
 	$width: 100%/$denominator*$numerator;
 
@@ -36,16 +38,21 @@ $column_margin: 1% !default;
 	}
 }
 
-@mixin create_columns($number_of_columns: $number_of_columns, $margin: $column_margin) {
+@mixin create_column_widths($number_of_columns: $number_of_columns, $margin: $column_margin) {
 
 	@for $denominator from 1 through $number_of_columns {
 		@for $numerator from 1 through $denominator {
-			&.#{nth($numerators, $numerator)}.#{nth($denominators, $denominator)} {
+			&.#{nth($numerators, $numerator)}-#{nth($denominators, $denominator)} {
 				@include column_width($numerator, $denominator, $margin);
 			}
 		}
 	}
 
+}
+
+@mixin stack_column {
+	float: none;
+	display: block;
 }
 
 .column {
@@ -54,9 +61,26 @@ $column_margin: 1% !default;
 		left: $column_margin;
 		right: $column_margin;
 	}
-	width: 100% - $column_margin*2;
+	
+	@include column_width(1, 1, $column_margin);
 	
 	@include box-sizing(border-box);
 
-	@include create_columns();
+	@include create_column_widths();
+
+	.stack &,
+		&.stacked {
+			@include stack_column;
+		}
+}
+
+@if $responsive {
+
+	@media only screen and (max-width: 767px) {
+
+		.column {
+			@include stack_column;
+		}
+	}
+
 }
