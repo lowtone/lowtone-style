@@ -1,70 +1,15 @@
 @charset "UTF-8";
 
-@import "compass/css3";
-
-$numerators: "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen";
-$denominators: "whole", "half", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth";
-
-$number_of_columns: 16 !default;
-$column_margin: 1% !default;
+@import "partials/grid";
 
 $responsive: true !default;
 
-@mixin column_width($numerator, $denominator, $margin: $column_margin) {
-	$width: 100%/$denominator*$numerator;
-
-	width: $width - $margin*2;
-
-	@if $margin > 0 {
-
-		&.alpha {
-			margin-left: 0;
-			width: $width - $margin;
-		}
-
-		&.omega {
-			margin-right: 0;
-			width: $width - $margin;
-		}
-
-		&.alpha.omega {
-			width: $width;
-			margin: {
-				left: 0;
-				right: 0;
-			}
-		}
-
-	}
-}
-
-@mixin create_column_widths($number_of_columns: $number_of_columns, $margin: $column_margin) {
-
-	@for $denominator from 1 through $number_of_columns {
-		@for $numerator from 1 through $denominator {
-			&.#{nth($numerators, $numerator)}-#{nth($denominators, $denominator)} {
-				@include column_width($numerator, $denominator, $margin);
-			}
-		}
-	}
-
-}
-
-@mixin stack_column {
-	float: none;
-	display: block;
-}
-
 .column {
 	float: left;
-	margin: {
-		left: $column_margin;
-		right: $column_margin;
-	}
-	
-	@include column_width(1, 1, $column_margin);
 	
 	@include box-sizing(border-box);
+	
+	@include column_width(1, 1, $column_margin);
 
 	@include create_column_widths();
 
