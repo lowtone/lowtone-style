@@ -1,11 +1,19 @@
 @charset "UTF-8";
+/**
+ * Grid mixins.
+ * 
+ * @author Paul van der Meijs <code@lowtone.nl>
+ * @copyright Copyright (c) 2013, Paul van der Meijs
+ * @license http://wordpress.lowtone.nl/license/
+ * @version 1.0
+ */
 
-@import "compass/css3";
+@import "compass/css3/box-sizing";
 
 $numerators: "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen";
 $denominators: "whole", "half", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth";
 
-$number_of_columns: 16 !default;
+$number_of_columns: length($numerators) !default;
 $column_margin: 1% !default;
 
 @mixin column_width($numerator, $denominator, $margin: $column_margin, $important: null) {
@@ -42,11 +50,24 @@ $column_margin: 1% !default;
 }
 
 @mixin create_column_widths($number_of_columns: $number_of_columns, $margin: $column_margin) {
+	$widths: ();
 
 	@for $denominator from 1 through $number_of_columns {
 		@for $numerator from 1 through $denominator {
-			&.#{nth($numerators, $numerator)}-#{nth($denominators, $denominator)} {
-				@include column_width($numerator, $denominator, $margin);
+			$width: 100/$denominator*$numerator;
+
+			@if false == index($widths, $width) {
+				$class_name: #{nth($numerators, $numerator)}-#{nth($denominators, $denominator)};
+				
+				@if $numerator > 1 {
+					$class_name: #{$class_name}s;
+				}
+
+				&.#{$class_name} {
+					@include column_width($numerator, $denominator, $margin);
+				}
+
+				$widths: append($widths, $width);
 			}
 		}
 	}
@@ -58,4 +79,19 @@ $column_margin: 1% !default;
 	display: block;
 
 	@include column_width(1, 1, $column_margin, !important);
+}
+
+@mixin column {
+	float: left;
+	
+	@include box-sizing(border-box);
+	
+	@include column_width(1, 1, $column_margin);
+
+	@include create_column_widths();
+
+	.stack &,
+		&.stacked {
+			@include stack_column;
+		}
 }

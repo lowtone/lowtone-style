@@ -1,22 +1,19 @@
 @charset "UTF-8";
+/**
+ * Grid class definitions.
+ * 
+ * @author Paul van der Meijs <code@lowtone.nl>
+ * @copyright Copyright (c) 2013, Paul van der Meijs
+ * @license http://wordpress.lowtone.nl/license/
+ * @version 1.0
+ */
 
 @import "partials/grid";
 
 $responsive: true !default;
 
 .column {
-	float: left;
-	
-	@include box-sizing(border-box);
-	
-	@include column_width(1, 1, $column_margin);
-
-	@include create_column_widths();
-
-	.stack &,
-		&.stacked {
-			@include stack_column;
-		}
+	@include column;
 }
 
 @if $responsive {
