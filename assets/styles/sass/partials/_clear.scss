@@ -1,0 +1,43 @@
+@charset "UTF-8";
+/**
+ * Clearfix.
+ * 
+ * @author Paul van der Meijs <code@lowtone.nl>
+ * @copyright Copyright (c) 2013, Paul van der Meijs
+ * @license http://wordpress.lowtone.nl/license/
+ * @version 1.0
+ */
+
+@mixin _clear {
+	display: table;
+	clear: both;
+	content: '';
+}
+
+@mixin _reset_clear {
+	display: none;
+	clear: none;
+	content: '';
+}
+
+@mixin clear($what: both) {
+	@if before == $what {
+		&:before {
+			@include _clear;
+		}
+	} @elseif after == $what {
+		&:after {
+			@include _clear;
+		}
+	} @elseif none == $what {
+		&:before,
+			&:after {
+				@include _reset_clear;
+			}
+	} @else {
+		&:before, 
+			&:after {
+				@include _clear;
+			}
+	}
+}

@@ -1,0 +1,15 @@
+@charset "UTF-8";
+/**
+ * Clearfix definition.
+ * 
+ * @author Paul van der Meijs <code@lowtone.nl>
+ * @copyright Copyright (c) 2013, Paul van der Meijs
+ * @license http://wordpress.lowtone.nl/license/
+ * @version 1.0
+ */
+
+@import "partials/clear";
+
+.clearfix {
+	@include clear;
+}
