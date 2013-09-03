@@ -6,7 +6,7 @@ namespace lowtone\style\styles;
  * @copyright Copyright (c) 2011-2012, Paul van der Meijs
  * @license http://wordpress.lowtone.nl/license/
  * @version 1.0
- * @package wordpress\libs\lowtone\style\styles;
+ * @package wordpress\libs\lowtone\style\styles
  */
 class Grid {
 
@@ -50,6 +50,43 @@ class Grid {
 	protected static $__divisions = array();
 
 	/**
+	 * Get a list of all positible divisions using the provided maximum number 
+	 * of columns.
+	 * @param integer $numberOfColumns The maximum number of columns.
+	 * @return array Returns a list of divisions.
+	 */
+	public function divisions($numberOfColumns = 16) {
+		if (isset(self::$__divisions[$numberOfColumns]))
+			return self::$__divisions[$numberOfColumns];
+
+		$divisions = array();
+
+		for ($widths = array(), $denominator = 1; $denominator <= $numberOfColumns; $denominator++) 
+			for ($numerator = 1; $numerator <= $denominator; $numerator++) {
+				$width = 100/$denominator*$numerator;
+
+				if (in_array($width, $widths))
+					continue;
+
+				$divisions[] = compact("numerator", "denominator");
+
+				$widths[] = $width;
+			}
+
+		return self::$__divisions[$numberOfColumns] = $divisions;
+	}
+
+	/**
+	 * Create a division string from a given numerator and denominator.
+	 * @param int $numerator The numerator.
+	 * @param int $denominator The denominator.
+	 * @return string Returns a division identifier string.
+	 */
+	public function division($numerator, $denominator) {
+		return self::$numerators[$numerator-1] . "-" . self::$denominators[$denominator-1] . ($numerator > 1 ? "s" : "");
+	}
+
+	/**
 	 * Convert a numeric division to a textual identifier.
 	 * @param string $width The numeric identifier.
 	 * @return string Returns a textual division identifier.
@@ -57,7 +94,7 @@ class Grid {
 	public function translateWidth($width) {
 		list($numerator, $denominator) = explode("/", $width);
 
-		return self::$numerators[$numerator-1] . "-" . self::$denominators[$denominator-1];
+		return self::division($numerator, $denominator);
 	}
 
 	/**
@@ -103,42 +140,17 @@ class Grid {
 	}
 
 	/**
-	 * Get a list of all positible divisions using the provided maximum number 
-	 * of columns.
-	 * @param integer $numberOfColumns The maximum number of columns.
-	 * @return array Returns a list of divisions.
-	 */
-	public function divisions($numberOfColumns = 16) {
-		if (isset(self::$__divisions[$numberOfColumns]))
-			return self::$__divisions[$numberOfColumns];
-
-		$divisions = array();
-
-		for ($widths = array(), $denominator = 1; $denominator <= $numberOfColumns; $denominator++) 
-			for ($numerator = 1; $numerator <= $denominator; $numerator++) {
-				$width = 100/$denominator*$numerator;
-
-				if (in_array($width, $widths))
-					continue;
-
-				$divisions[] = compact("numerator", "denominator");
-
-				$widths[] = $width;
-			}
-
-		return self::$__divisions[$numberOfColumns] = $divisions;
-	}
-
-	/**
 	 * Register column shortcodes using the given maximum number of columns. 
 	 * Shortcodes are created using their textual identifier as tag (e.g. 
-	 * one-half or two-third).
+	 * one-half or two-thirds).
 	 * @param int $numberOfColumns The maximum number of columns.
 	 * @param array $defaults Default attributes for the shortcode.
 	 */
 	public function registerShortcodes($numberOfColumns, $defaults = array()) {
 		foreach (self::divisions($numberOfColumns) as $div) {
-			$defaults["width"] = $width = self::$numerators[$div["numerator"]-1] . "-" . self::$denominators[$div["denominator"]-1];
+			$defaults["width"] 
+				= $width 
+				= self::division($div["numerator"], $div["denominator"]);
 
 			add_shortcode($width, function($atts, $content) use ($defaults) {
 				return Grid::shortcode(array_merge((array) $atts, $defaults), $content);
